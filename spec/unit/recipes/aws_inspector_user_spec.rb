@@ -16,5 +16,14 @@ describe 'aws_inspector::aws_inspector_user' do
     it 'converges successfully' do
       expect { chef_run }.to_not raise_error
     end
+
+    it 'group is created successfully' do
+        expect(chef_run).to create_group('hosting')
+    end
+
+    it 'user is created successfully' do
+        expect(chef_run).to create_user('hosting')
+    end
+
   end
 end

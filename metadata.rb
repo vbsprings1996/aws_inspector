@@ -1,6 +1,6 @@
 name 'aws_inspector'
-maintainer 'The Authors'
-maintainer_email 'you@example.com'
+maintainer 'Vijay Bheemineni'
+maintainer_email 'bheemineni.vijay@gmail.com'
 license 'all_rights'
 description 'Installs/Configures aws_inspector'
 long_description 'Installs/Configures aws_inspector'

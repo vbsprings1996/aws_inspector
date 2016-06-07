@@ -1,0 +1,33 @@
+---
+driver:
+  name: vagrant
+
+
+provisioner:
+  name: chef_zero
+
+# Uncomment the following verifier to leverage Inspec instead of Busser (the
+# default verifier)
+# verifier:
+#   name: inspec
+
+platforms:
+  - name: ubuntu-14.04
+    driver:
+      customize:
+        memory: 256
+    network:
+      - ["private_network", {ip: "192.168.33.33"}]
+      - ["forwarded_port", {guest: 80, host: 9293}]
+  - name: centos-7.2
+    driver:
+      customize:
+        memory: 256
+    network:
+      - ["private_network", {ip: "192.168.33.34"}]
+      - ["forwarded_port", {guest: 80, host: 9294}]
+suites:
+  - name: default
+    run_list:
+      - recipe[aws_inspector::default]
+    attributes:

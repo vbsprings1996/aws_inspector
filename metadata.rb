@@ -1,0 +1,7 @@
+name 'aws_inspector'
+maintainer 'The Authors'
+maintainer_email 'you@example.com'
+license 'all_rights'
+description 'Installs/Configures aws_inspector'
+long_description 'Installs/Configures aws_inspector'
+version '0.1.0'

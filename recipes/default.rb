@@ -4,5 +4,8 @@
 #
 # Copyright (c) 2016 The Authors, All Rights Reserved.
 
-# include 'aws_inspector_user.rb' recipe.
+# Include 'aws_inspector_user.rb' recipe.
 include_recipe 'aws_inspector::aws_inspector_user'
+
+# Include 'download_aws_inspector.rb' recipe.
+include_recipe 'aws_inspector::download_aws_inspector'

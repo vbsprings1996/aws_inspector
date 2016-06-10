@@ -4,10 +4,11 @@
 #
 # Copyright (c) 2016 The Authors, All Rights Reserved.
 
-# Download the install script to /tmp/install
-
 # Currently '/tmp/install' is hardcoded, should we create attribute for this too?
-remote_file '/tmp/install' do
+aws_inspector_install_script_path = "#{node.default['aws_inspector']['resources_download_dir']}/#{node.default['aws_inspector']['install_script']}"
+
+# Download the install script to /tmp/install
+remote_file aws_inspector_install_script_path do
   source node.default['aws_inspector']['install_script_url']
   owner node.default['aws_inspector']['group']
   group node.default['aws_inspector']['group']

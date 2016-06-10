@@ -8,6 +8,7 @@
 aws_inspector_install_script_path = "#{node.default['aws_inspector']['resources_download_dir']}/#{node.default['aws_inspector']['install_script']}"
 
 # Download the install script to /tmp/install
+aws_inspector_install_script_path = "#{node.default['aws_inspector']['resources_download_dir']}/#{node.default['aws_inspector']['install_script']}"
 remote_file aws_inspector_install_script_path do
   source node.default['aws_inspector']['install_script_url']
   owner node.default['aws_inspector']['group']

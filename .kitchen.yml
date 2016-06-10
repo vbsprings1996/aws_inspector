@@ -1,31 +1,43 @@
 ---
 driver:
-  name: vagrant
+  name: ec2
+  aws_ssh_key_id: vastestkitchen
+  security_group_ids: ["sg-e504c183"]
+  region: us-east-1
+  availability_zone: a
+  require_chef_omnibus: true
+  subnet_id: subnet-7f6b1754
+  instance_type: m3.medium
+  associate_public_ip: true
+  interface: dns
 
-
-provisioner:
-  name: chef_zero
-
-# Uncomment the following verifier to leverage Inspec instead of Busser (the
-# default verifier)
-# verifier:
-#   name: inspec
+transport:
+  ssh_key: ~/.ssh/vastestkitchen
+  connection_timeout: 10
+  connection_retries: 5
+  username: ubuntu
 
 platforms:
-  - name: ubuntu-14.04
+#  - name: ubuntu-14.04
+#    driver:
+#      image_id: ami-452bd728
+#  - name: ubuntu-15.10
+#    driver:
+#      image_id: ami-3505ee58
+#  - name: ubuntu-16.04
+#    driver:
+#      image_id: ami-13be557e
+  - name: centos-7
     driver:
-      customize:
-        memory: 256
-    network:
-      - ["private_network", {ip: "192.168.33.33"}]
-      - ["forwarded_port", {guest: 80, host: 9293}]
-  - name: centos-7.2
-    driver:
-      customize:
-        memory: 256
-    network:
-      - ["private_network", {ip: "192.168.33.34"}]
-      - ["forwarded_port", {guest: 80, host: 9294}]
+      image_id: ami-6d1c2007
+    transport:
+      username: centos
+#  - name: amazonlinux-2016.03.2
+#    driver:
+#      image_id: ami-a4827dc9
+#    transport:
+#      username: ec2-user
+
 suites:
   - name: default
     run_list:

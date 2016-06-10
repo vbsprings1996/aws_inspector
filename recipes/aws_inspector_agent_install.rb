@@ -4,9 +4,11 @@
 #
 # Copyright (c) 2016 The Authors, All Rights Reserved.
 
+# AWS inspector install script path.
+aws_inspector_install_script_path = "#{node.default['aws_inspector']['resources_download_dir']}/#{node.default['aws_inspector']['install_script']}"
 # Install aws_inspector agent.
 execute 'aws inspector agent install' do
-  command 'bash /tmp/install'
+  command "bash #{aws_inspector_install_script_path}"
 end
 
 #ruby_block "aws_inspector_agent_install" do

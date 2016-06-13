@@ -7,7 +7,7 @@
 # Install gpg package, if it doesn't exist.
 package 'install_gpg' do
   case node[:platform]
-  when 'redhat', 'centos', 'amazon'
+  when 'centos', 'redhat', 'amazon', 'scientific', 'oracle'
     package_name 'gpg'
   when 'ubuntu', 'debian'
     package_name 'gnupg'
@@ -30,7 +30,7 @@ ruby_block "gpg_import_public_key_and_store_key_value" do
     block do
         Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
         gpg_command = "gpg --import #{aws_inspector_gpg_public_key_path}"
-        gpg_command_out = shell_out(gpg_command)
+        shell_out(gpg_command)
     end
     action :run
 end

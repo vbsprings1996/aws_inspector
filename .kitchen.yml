@@ -43,3 +43,5 @@ suites:
     run_list:
       - recipe[aws_inspector::default]
     attributes:
+    verifier:
+      name: inspec

@@ -21,8 +21,6 @@ CentOS (7.2)
 Windows Server 2008 R2 and Windows Server 2012
 
 
-#### packages
-
 Attributes
 ----------
 default['aws_inspector']['user'] = 'hosting'

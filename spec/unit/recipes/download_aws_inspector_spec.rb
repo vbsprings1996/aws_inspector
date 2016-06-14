@@ -17,6 +17,10 @@ describe 'aws_inspector::download_aws_inspector' do
       expect { chef_run }.to_not raise_error
     end
 
+    it 'Create the directory, if it doesnt exist' do
+      expect(chef_run).to create_directory('/tmp').with(user: 'hosting').with(group: 'hosting')
+    end
+
     it 'download of aws_inspector install script successful and make sure /tmp/install file exists' do
       expect(chef_run).to create_remote_file('/tmp/install')
     end

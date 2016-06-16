@@ -21,13 +21,9 @@ describe 'aws_inspector::aws_inspector_agent_install' do
         expect(chef_run).to run_execute('aws inspector agent install')
     end
 
-    #it 'aws inspector agent install' do
-    #    expect(chef_run).to run_ruby_block('aws_inspector_agent_install')
-    #end
-
-
-    it 'validate aws inspector installed successfully or not' do
-        expect(chef_run).to run_ruby_block('aws_inspector_agent_install_success_or_failure')
+    it 'enables the awsagent service' do
+        expect(chef_run).to enable_service('awsagent')
     end
+    
   end
 end

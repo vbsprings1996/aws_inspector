@@ -10,8 +10,5 @@ include_recipe 'aws_inspector::aws_inspector_user'
 # Include 'download_aws_inspector.rb' recipe.
 include_recipe 'aws_inspector::download_aws_inspector'
 
-# Include 'aws_inspector_install_script_gpg_signature_validation.rb' recipe.
-include_recipe 'aws_inspector::aws_inspector_install_script_gpg_signature_validation'
-
 # Include 'aws_inspector_agent_install.rb' recipe.
 include_recipe 'aws_inspector::aws_inspector_agent_install'

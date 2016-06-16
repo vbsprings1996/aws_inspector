@@ -6,72 +6,95 @@
 
 # Install gpg package, if it doesn't exist.
 package 'install_gpg' do
-  case node[:platform]
-  when 'centos', 'redhat', 'amazon', 'scientific', 'oracle'
-    package_name 'gpg'
-  when 'ubuntu', 'debian'
-    package_name 'gnupg'
-  end
+  package_name 'gnupg'
 end
 
 # AWS inspector gpg public key path.
-aws_inspector_gpg_public_key_path = "#{node.default['aws_inspector']['resources_download_dir']}/#{node.default['aws_inspector']['gpg_public_key']}"
+aws_inspector_gpg_public_key_path = ::File.join(
+  ::File::SEPARATOR, node['aws_inspector']['resources_download_dir'], node['aws_inspector']['gpg_public_key']
+  )
+
 # Download aws_inspector gpg public key.
 remote_file aws_inspector_gpg_public_key_path do
-  source node.default['aws_inspector']['install_script_gpg_public_key']
-  owner node.default['aws_inspector']['group']
-  group node.default['aws_inspector']['group']
-  mode '0755'
+  source node['aws_inspector']['install_script_gpg_public_key']
+  owner  node['aws_inspector']['group']
+  group  node['aws_inspector']['group']
+  mode   '0640'
+  retries 3
+  retry_delay 5
 end
 
 
 # Import the downloaded aws_inspector public key.
-ruby_block "gpg_import_public_key_and_store_key_value" do
-    block do
-        Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-        gpg_command = "gpg --import #{aws_inspector_gpg_public_key_path}"
-        shell_out(gpg_command)
-    end
-    action :run
+execute "import inspector gpg key" do
+  command "gpg --import #{aws_inspector_gpg_public_key_path}"
 end
 
 # Verify that the import key belongs to Amazon.
-ruby_block "gpg_verify_aws_inspector_fingerprint" do
+ruby_block "verify inspector gpg key" do
     block do
         Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-        gpg_command = "gpg --fingerprint $(gpg --list-keys 'Amazon' | head -1 | cut -d '/' -f2 | cut -d ' ' -f1) | grep -i fingerprint | cut -d '=' -f2 | sed 's/^ //'"
-        gpg_command_out = shell_out(gpg_command)
 
-        puts "\n INFO: ***gpg_command_out.stdout : #{gpg_command_out.stdout}"
-        if gpg_command_out.stdout =~ /DDA0 D4C5 10AE 3C20 6F46  6DC0 2474 0960 5836 0418/
-          puts "\n INFO: aws_inspector public key finger print matched."
+        # expect to match 'DDA0 D4C5 10AE 3C20 6F46  6DC0 2474 0960 5836 0418' (http://rubular.com/r/aEE62xtOwe)
+        fp_re = Regexp.new('^\s*DDA0\s+D4C5\s+10AE\s+3C20\s+6F46\s+6DC0\s+2474\s+0960\s+5836\s+0418\s*$')
+
+        # Fetch the key id
+        key_id_cmd = "gpg --list-keys 'Amazon Inspector' | grep -i ^pub | awk '{print $2}' | cut -d '/' -f 2"
+        Chef::Log.debug('Executing command: %s' % key_id_cmd)
+        key_id = shell_out(key_id_cmd).stdout.chomp
+
+        # Fetch the fingerprint.
+        key_fp_cmd = "gpg --fingerprint #{key_id} | grep -i fingerprint | cut -d '=' -f 2"
+        Chef::Log.debug('Executing command: %s' % key_fp_cmd)
+        key_fp = shell_out(key_fp_cmd).stdout.chomp
+
+        #Validate if public key fingerprint matches.
+        Chef::Log.info("*** Inspector public key fingerprint: %s" % key_fp)
+        if fp_re.match(key_fp)
+          Chef::Log.info("Inspector public key fingerprint matches")
         else
-          raise "\n ERROR: aws_inspector public key finger print did not match."
+          msg = 'Inspector public key mismatch!'
+          Chef::Log.fatal(msg)
+          raise msg
         end
     end
     action :run
 end
 
-aws_inspector_install_script_signature_path = "#{node.default['aws_inspector']['resources_download_dir']}/#{node.default['aws_inspector']['install_script_sig']}"
+
 # Download aws_inspector install script signature file.
+aws_inspector_install_script_signature_path = ::File.join(
+  ::File::SEPARATOR, node['aws_inspector']['resources_download_dir'], node['aws_inspector']['install_script_sig']
+)
+
 remote_file aws_inspector_install_script_signature_path do
-  source node.default['aws_inspector']['install_script_gpg_signature_file']
-  owner node.default['aws_inspector']['group']
-  group node.default['aws_inspector']['group']
-  mode '0755'
+  source node['aws_inspector']['install_script_gpg_signature_file']
+  owner  node['aws_inspector']['group']
+  group  node['aws_inspector']['group']
+  mode   '0640'
+  retries 3
+  retry_delay 5
 end
 
 # Verify aws_inspector install script signature.
-ruby_block "gpg_verify_aws_inspector_install_script_signature" do
+ruby_block "verify inspector install script signature" do
     block do
         Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-        gpg_command = "gpg --verify #{aws_inspector_install_script_signature_path} 2>&1 | grep -i 'Amazon' | grep -i 'good'"
-        gpg_command_out = shell_out(gpg_command)
-        puts "\nINFO: ***gpg_command_out.stdout : #{gpg_command_out.stdout}"
-        if gpg_command_out.stdout =~ /Good signature/
-          puts "\n INFO: aws_inspector install script signature matched, now we can proceed with aws_inspector installation."
+
+        # http://rubular.com/r/mLbIC3GR51
+        verify_re = Regexp.new("good\s+signature\s+.*Amazon\s+Inspector", Regexp::IGNORECASE)
+
+        gpg_cmd = "gpg --verify #{aws_inspector_install_script_signature_path} 2>&1 | grep -i 'Amazon inspector' | grep -i 'good signature'"
+        Chef::Log.debug('Executing command: %s' % gpg_cmd)
+        gpg_cmd_out = shell_out(gpg_cmd).stdout.chomp
+
+        Chef::Log.info("*** install script signature verification output: %s" % gpg_cmd_out)
+        if verify_re.match(gpg_cmd_out)
+          Chef::Log.info("inspector install script signature verified")
         else
-          raise "\n ERROR: aws_inspector install script signature didn't match. We will stop aws_inspector installation"
+          msg = 'inspector install script signature verification FAILED!'
+          Chef::Log.fatal(msg)
+          raise msg
         end
     end
     action :run

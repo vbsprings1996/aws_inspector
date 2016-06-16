@@ -4,19 +4,15 @@
 #
 # Copyright (c) 2016 The Authors, All Rights Reserved.
 
-# Creating the group 'hosting'. Currently hard coding but refactor the code.
-group node.default['aws_inspector']['group'] do
-  # Chef::Log.info("INFO : Creating group :
-                #{node.default['aws_inspector']['group']}")
-end
+# Creating the group
+group node.default['aws_inspector']['group']
 
-### Creating the user 'hosting'. Currently hard coding but refactor the code.
+
+### Creating the user
 # Defining 'user' home directory.
 # user node.default['aws_inspector']['user'] do
-user node.default['aws_inspector']['group'] do
-  # Chef::Log.info("INFO : Creating user :
-                #{node.default['aws_inspector']['user']}")
-  group node.default['aws_inspector']['group']
-  shell '/bin/bash'
+user node['aws_inspector']['group'] do
+  group node['aws_inspector']['group']
+  shell '/sbin/nologin'
   comment 'aws inspector user'
 end

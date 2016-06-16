@@ -18,11 +18,11 @@ describe 'aws_inspector::aws_inspector_user' do
     end
 
     it 'group is created successfully' do
-        expect(chef_run).to create_group('hosting')
+        expect(chef_run).to create_group('awsinspector')
     end
 
     it 'user is created successfully' do
-        expect(chef_run).to create_user('hosting')
+        expect(chef_run).to create_user('awsinspector').with(shell: '/sbin/nologin')
     end
 
   end

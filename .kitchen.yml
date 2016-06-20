@@ -1,18 +1,18 @@
 ---
 driver:
   name: ec2
-  aws_ssh_key_id: vastestkitchen
-  security_group_ids: ["sg-e504c183"]
+  aws_ssh_key_id: <SSH KEY NAME>
+  security_group_ids: ["<AWS SECURITY GROUP ID>"]
   region: us-east-1
   availability_zone: a
   require_chef_omnibus: true
-  subnet_id: subnet-7f6b1754
+  subnet_id: <AWS SUBNET ID>
   instance_type: m3.medium
   associate_public_ip: true
   interface: dns
 
 transport:
-  ssh_key: ~/.ssh/vastestkitchen
+  ssh_key: ~/.ssh/<SSH KEY NAME>
   connection_timeout: 10
   connection_retries: 5
   username: ubuntu

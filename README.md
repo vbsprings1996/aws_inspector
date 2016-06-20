@@ -62,3 +62,20 @@ Usage
 License and Authors
 -------------------
 Authors:: Vijay Bheemineni(bheemineni.vijay@gmail.com)
+
+Thanks
+-------------------
+
+Mike Morris
+
+Bryan Bishop
+
+Anshul Shrivastava
+
+Bryan Anderson
+
+Ryan Olsen
+
+Craig McNeil
+
+Jeff Schmidt 

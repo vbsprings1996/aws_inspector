@@ -65,7 +65,6 @@ Authors:: Vijay Bheemineni(bheemineni.vijay@gmail.com)
 
 Thanks
 -------------------
-<<<<<<< HEAD
 
 Mike Morris
 
@@ -79,12 +78,4 @@ Ryan Olsen
 
 Craig McNeil
 
-=======
-Mike Morris
-Bryan Bishop
-Bryan Anderson
-Anshul Shrivastava
-Ryan Olsen
-Craig McNeil
->>>>>>> 29d3e9579b997a00300d3584b807cb2d7ca255e9
 Jeff Schmidt 

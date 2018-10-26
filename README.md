@@ -61,7 +61,7 @@ Usage
 
 License and Authors
 -------------------
-Authors:: Vijay Bheemineni(bheemineni.vijay@gmail.com)
+Authors:: Vijay Bheemineni
 
 Thanks
 -------------------
